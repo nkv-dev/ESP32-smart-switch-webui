@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Smart Home Dashboard</title>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+      <h1>🏠 Smart Home Automation</h1>
+
+      <div id="wifiStatus">
+        🔴 Offline
+      </div>
+
+    </div>
+
+    <!-- SENSOR SECTION -->
+
+    <div class="card">
+
+      <h2>📡 Live Sensor Data</h2>
+
+      <div class="sensorGrid">
+
+        <div class="sensorBox">
+          <h3>🌡 Temperature</h3>
+          <p id="temp">0 °C</p>
+        </div>
+
+        <div class="sensorBox">
+          <h3>💧 Humidity</h3>
+          <p id="hum">0 %</p>
+        </div>
+
+        <div class="sensorBox">
+          <h3>☀ Light</h3>
+          <p id="light">0</p>
+        </div>
+
+        <div class="sensorBox">
+          <h3>🔥 Gas</h3>
+          <p id="gas">0</p>
+        </div>
+
+        <div class="sensorBox">
+          <h3>🚶 Motion</h3>
+          <p id="motion">NO</p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RELAY SECTION -->
+
+    <div class="card">
+
+      <h2>⚡ Relay Controls</h2>
+
+      <div class="relayGrid">
+
+        <!-- Relay 1 -->
+
+        <div class="relayBox auto">
+
+          <h3>💡 Relay 1</h3>
+
+          <p>Automatic LDR Control</p>
+
+          <span
+            class="relayStatus"
+            id="relay1Status">
+            OFF
+          </span>
+
+        </div>
+
+        <!-- Relay 2 -->
+
+        <div class="relayBox auto">
+
+          <h3>🚶 Relay 2</h3>
+
+          <p>PIR Motion Automation</p>
+
+          <span
+            class="relayStatus"
+            id="relay2Status">
+            OFF
+          </span>
+
+        </div>
+
+        <!-- Relay 3 -->
+
+        <div class="relayBox">
+
+          <h3>🔌 Relay 3</h3>
+
+          <p>Manual Internet Control</p>
+
+          <button onclick="toggleRelay(3)">
+            Toggle Relay 3
+          </button>
+
+          <span
+            class="relayStatus"
+            id="relay3Status">
+            OFF
+          </span>
+
+        </div>
+
+        <!-- Relay 4 -->
+
+        <div class="relayBox">
+
+          <h3>🔌 Relay 4</h3>
+
+          <p>Manual Internet Control</p>
+
+          <button onclick="toggleRelay(4)">
+            Toggle Relay 4
+          </button>
+
+          <span
+            class="relayStatus"
+            id="relay4Status">
+            OFF
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ALERT SECTION -->
+
+    <div class="card">
+
+      <h2>🚨 System Alerts</h2>
+
+      <div id="alertBox">
+        ✅ System Normal
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+      Smart Home Automation using ESP32 + Firebase
+    </div>
+
+  </div>
+
+  <!-- External JS -->
+  <script src="script.js"></script>
+
+</body>
+
+</html>
