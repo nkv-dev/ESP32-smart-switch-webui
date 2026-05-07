@@ -1,151 +1,428 @@
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+/*
+================================================================================
+                    ESP32 SMART HOME DASHBOARD - CSS STYLES
+================================================================================
+
+WHAT IS CSS?
+------------
+CSS (Cascading Style Sheets) is like the "interior design" of a webpage.
+While HTML says "here's a box for temperature," CSS says "make that box
+blue, rounded, and in the top-right corner."
+
+Think of it like building a house:
+- HTML = the walls, rooms, and structure
+- CSS = the paint, furniture, and decorations
+- JavaScript = the electricity and automation
+
+HOW CSS WORKS:
+--------------
+1. You "select" an HTML element (like "body" or ".card")
+2. You "apply" properties to it (like "background-color: blue")
+
+SELECTOR TYPES USED HERE:
+- * (asterisk) = selects EVERYTHING (universal selector)
+- body = selects the main body element
+- .className = selects elements with that class (starts with dot)
+- #idName = selects element with that specific ID (starts with hash)
+- element:hover = selects element when mouse is over it
+
+COMMON PROPERTIES:
+- background = background color
+- color = text color
+- padding = space INSIDE the box (between content and edge)
+- margin = space OUTSIDE the box (between this box and others)
+- border-radius = how round the corners are
+- font-size = how big the text is
+- display = how the element is displayed (block, inline, flex, grid)
+
+COLORS USED HERE:
+- We're using a "dark theme" with these colors:
+- #0f172a = Very dark blue (almost black) - page background
+- #1e293b = Dark blue-gray - card backgrounds
+- #334155 = Medium gray-blue - button backgrounds, boxes
+- #38bdf8 = Light blue - section titles
+- #22c55e = Green - for "ON" status
+- #ef4444 = Red - for "OFF" status and alerts
+
+================================================================================
+*/
+
+
+/*
+================================================================================
+                           SECTION 1: GLOBAL STYLES
+================================================================================
+These apply to everything on the page - think of it as the "default" settings.
+*/
+
+* {
+  /* Reset margins and padding to zero
+
+  What is margin vs padding?
+  - Margin: Space OUTSIDE an element (pushing it away from neighbors)
+  - Padding: Space INSIDE an element (pushing content away from edges)
+
+  The asterisk * means "everything" - so we're resetting ALL elements.
+  This gives us a clean slate to work with.
+  */
+  margin: 0;
+  padding: 0;
+
+  /* Border-box makes padding count towards the element's total width
+  Normally, if you set width: 100px and padding: 10px, the total becomes 120px.
+  With border-box, the padding is included in the 100px. It's easier to work with! */
+  box-sizing: border-box;
 }
 
-body{
-  background:#0f172a;
-  font-family:Arial, sans-serif;
-  color:white;
+
+body {
+  /* Page background color - dark navy blue */
+  background: #0f172a;
+
+  /* Font family - Arial is a common, clean font
+  "sans-serif" is a backup in case Arial isn't available */
+  font-family: Arial, sans-serif;
+
+  /* Text color - white */
+  color: white;
 }
 
-.container{
-  width:95%;
-  max-width:1200px;
-  margin:auto;
-  padding:20px;
+
+/*
+================================================================================
+                           SECTION 2: CONTAINER
+================================================================================
+The container wraps everything and centers it on the page.
+*/
+
+.container {
+  /* Width: 95% of the screen (leaves a little space on sides)
+  But max-width: 1200px means it won't get bigger than 1200px even on huge screens */
+  width: 95%;
+  max-width: 1200px;
+
+  /* margin: auto means "center horizontally" - the browser calculates equal margins */
+  margin: auto;
+
+  /* Padding: 20px inside the container (space from edge to content) */
+  padding: 20px;
 }
 
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:25px;
-  flex-wrap:wrap;
-  gap:15px;
+
+/*
+================================================================================
+                           SECTION 3: HEADER
+================================================================================
+The top section with the title and WiFi status.
+*/
+
+.header {
+  /* Flexbox - a powerful way to arrange items in a row or column
+  display: flex makes the children line up side by side */
+  display: flex;
+
+  /* justify-content: space-between puts items at opposite ends
+  (title on left, status on right) */
+  justify-content: space-between;
+
+  /* align-items: center vertically centers them (so they're at same height) */
+  align-items: center;
+
+  /* margin-bottom: space below the header, separating from the cards */
+  margin-bottom: 25px;
+
+  /* flex-wrap: wrap allows items to wrap to next line on small screens */
+  flex-wrap: wrap;
+
+  /* gap: 15px - space between items when they wrap */
+  gap: 15px;
 }
 
-.header h1{
-  font-size:32px;
+.header h1 {
+  /* Title font size - 32 pixels (fairly large) */
+  font-size: 32px;
 }
 
-#wifiStatus{
-  background:#1e293b;
-  padding:10px 20px;
-  border-radius:12px;
-  font-size:18px;
+
+/*
+================================================================================
+                           SECTION 4: WIFI STATUS BOX
+================================================================================
+Shows whether the ESP32 is connected or not.
+
+We use # instead of . because this is an ID (only one element should have it).
+*/
+
+#wifiStatus {
+  /* Background color - dark gray-blue */
+  background: #1e293b;
+
+  /* Padding: 10px top/bottom, 20px left/right */
+  padding: 10px 20px;
+
+  /* border-radius: 12px - makes the corners rounded (not sharp) */
+  border-radius: 12px;
+
+  /* Font size for the status text */
+  font-size: 18px;
 }
 
-.card{
-  background:#1e293b;
-  padding:25px;
-  border-radius:18px;
-  margin-bottom:25px;
-  box-shadow:0 0 15px rgba(0,0,0,0.4);
+
+/*
+================================================================================
+                           SECTION 5: CARDS
+================================================================================
+Cards are the main "containers" that hold each section.
+Think of them like cards in a card game - each holds different info.
+*/
+
+.card {
+  /* Card background color */
+  background: #1e293b;
+
+  /* Padding inside the card */
+  padding: 25px;
+
+  /* Rounded corners */
+  border-radius: 18px;
+
+  /* Space below this card (before the next one) */
+  margin-bottom: 25px;
+
+  /* box-shadow: adds a shadow behind the card
+  0 0 15px = 15px blur, no offset
+  rgba(0,0,0,0.4) = black with 40% opacity
+  This gives a subtle 3D effect */
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
 }
 
-.card h2{
-  margin-bottom:20px;
-  color:#38bdf8;
+.card h2 {
+  /* Section titles inside cards */
+  margin-bottom: 20px;
+  color: #38bdf8;  /* Light blue color for the title */
 }
 
-/* SENSOR GRID */
 
-.sensorGrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:20px;
+/*
+================================================================================
+                           SECTION 6: SENSOR GRID
+================================================================================
+The grid that holds all the sensor boxes.
+Grid is great for making responsive layouts that automatically adjust!
+*/
+
+.sensorGrid {
+  /* display: grid turns this into a CSS Grid container */
+  display: grid;
+
+  /* grid-template-columns: defines how many columns and how wide they are
+  repeat(auto-fit, minmax(180px, 1fr)) means:
+  - auto-fit: fit as many columns as possible
+  - minmax(180px, 1fr): columns are at least 180px wide, can grow to fill space
+  This makes it responsive - on phones, fewer columns; on tablets, more! */
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+
+  /* gap: 20px - space between grid items */
+  gap: 20px;
 }
 
-.sensorBox{
-  background:#334155;
-  padding:20px;
-  border-radius:15px;
-  text-align:center;
-  transition:0.3s;
+
+/*
+================================================================================
+                           SECTION 7: SENSOR BOXES
+================================================================================
+Each individual sensor's display box.
+*/
+
+.sensorBox {
+  /* Background color for each sensor box */
+  background: #334155;
+
+  /* Padding inside the box */
+  padding: 20px;
+
+  /* Rounded corners */
+  border-radius: 15px;
+
+  /* Center the text inside */
+  text-align: center;
+
+  /* transition: 0.3s makes changes happen smoothly over 0.3 seconds
+  This applies to the transform effect below */
+  transition: 0.3s;
 }
 
-.sensorBox:hover{
-  transform:translateY(-5px);
+/* When mouse hovers over a sensor box */
+.sensorBox:hover {
+  /* transform: translateY(-5px) moves the box UP by 5 pixels
+  This creates a nice "lift" effect when you hover */
+  transform: translateY(-5px);
 }
 
-.sensorBox h3{
-  margin-bottom:10px;
-  font-size:18px;
+.sensorBox h3 {
+  /* Sensor name styling */
+  margin-bottom: 10px;
+  font-size: 18px;
 }
 
-.sensorBox p{
-  font-size:28px;
-  font-weight:bold;
-  margin-top:10px;
+.sensorBox p {
+  /* The actual reading numbers */
+  font-size: 28px;      /* Big and easy to read */
+  font-weight: bold;    /* Bold makes it stand out */
+  margin-top: 10px;     /* Space above the number */
 }
 
-/* RELAY GRID */
 
-.relayGrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:20px;
+/*
+================================================================================
+                           SECTION 8: RELAY GRID
+================================================================================
+Grid for the relay control boxes - similar to sensor grid but wider boxes.
+*/
+
+.relayGrid {
+  display: grid;
+
+  /* Same as sensor grid but with wider minimum width (230px) */
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+
+  gap: 20px;
 }
 
-.relayBox{
-  background:#334155;
-  padding:20px;
-  border-radius:15px;
-  text-align:center;
+
+.relayBox {
+  /* Individual relay box styling */
+  background: #334155;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
 }
 
-.relayBox h3{
-  margin-bottom:10px;
+.relayBox h3 {
+  margin-bottom: 10px;
 }
 
-.relayBox p{
-  color:#cbd5e1;
-  margin-bottom:15px;
+.relayBox p {
+  /* Description text - slightly lighter color */
+  color: #cbd5e1;
+  margin-bottom: 15px;
 }
 
-.relayStatus{
-  display:block;
-  margin-top:15px;
-  font-size:22px;
-  font-weight:bold;
+.relayStatus {
+  /* The ON/OFF status text display */
+  display: block;        /* Makes it a block element (takes full width) */
+  margin-top: 15px;     /* Space above */
+  font-size: 22px;      /* Big text */
+  font-weight: bold;    /* Bold */
 }
 
-.auto{
-  border:2px solid #10b981;
+/* The .auto class adds a green border to automatic relays
+   to show they're controlled by sensors, not manually */
+.auto {
+  border: 2px solid #10b981;  /* Green border - shows "automatic" */
 }
 
-button{
-  background:#2563eb;
-  color:white;
-  border:none;
-  padding:12px 25px;
-  border-radius:12px;
-  cursor:pointer;
-  font-size:16px;
-  transition:0.3s;
+
+/*
+================================================================================
+                           SECTION 9: BUTTONS
+================================================================================
+The toggle buttons for manual relay control.
+*/
+
+button {
+  /* Button background - blue */
+  background: #2563eb;
+
+  /* Text color - white */
+  color: white;
+
+  /* No border (default border removed) */
+  border: none;
+
+  /* Padding: 12px top/bottom, 25px left/right */
+  padding: 12px 25px;
+
+  /* Rounded corners */
+  border-radius: 12px;
+
+  /* cursor: pointer shows a hand icon when hovering (like a link) */
+  cursor: pointer;
+
+  /* Text size */
+  font-size: 16px;
+
+  /* Smooth transition for hover effect */
+  transition: 0.3s;
 }
 
-button:hover{
-  background:#1d4ed8;
+/* When hovering over a button */
+button:hover {
+  /* Make it a slightly darker blue */
+  background: #1d4ed8;
 }
 
-/* ALERT */
 
-#alertBox{
-  background:#334155;
-  padding:20px;
-  border-radius:15px;
-  font-size:22px;
-  text-align:center;
-  font-weight:bold;
+/*
+================================================================================
+                           SECTION 10: ALERT BOX
+================================================================================
+The alert section that shows system status and warnings.
+*/
+
+#alertBox {
+  /* Background color */
+  background: #334155;
+
+  /* Padding */
+  padding: 20px;
+
+  /* Rounded corners */
+  border-radius: 15px;
+
+  /* Text styling */
+  font-size: 22px;
+  text-align: center;
+  font-weight: bold;
 }
 
-/* FOOTER */
 
-.footer{
-  text-align:center;
-  margin-top:30px;
-  color:#94a3b8;
+/*
+================================================================================
+                           SECTION 11: FOOTER
+================================================================================
+The bottom section with credit/info.
+*/
+
+.footer {
+  /* Center the text */
+  text-align: center;
+
+  /* Space above the footer */
+  margin-top: 30px;
+
+  /* Muted/gray color for less emphasis */
+  color: #94a3b8;
 }
+
+
+/*
+================================================================================
+                              END OF CSS FILE
+================================================================================
+
+WHAT WE LEARNED:
+---------------
+1. CSS controls how things LOOK (colors, sizes, positions)
+2. Classes (.name) can be used many times, IDs (#name) are unique
+3. Flexbox and Grid make responsive layouts easy
+4. Colors can be hex codes like #0f172a
+5. Hover effects (like moving up) make things feel interactive
+
+TO MODIFY THE LOOK:
+- Change colors (hex codes) to your preference
+- Adjust sizes (padding, font-size) to make things bigger/smaller
+- Add more properties to experiment!
+
+================================================================================
+*/

@@ -1,183 +1,319 @@
+<!--
+================================================================================
+                    ESP32 SMART HOME DASHBOARD - HTML FILE
+================================================================================
+
+WHAT IS THIS FILE?
+------------------
+HTML (HyperText Markup Language) is the "skeleton" of a webpage. It defines
+WHAT CONTENT appears on the page (text, images, buttons), but NOT HOW it looks.
+
+Think of it like a house:
+- HTML = the structure (walls, rooms, doors)
+- CSS (style.css) = the paint, decorations, furniture
+- JavaScript (script.js) = the electricity, plumbing, and automation
+
+HOW TO READ THIS FILE:
+----------------------
+- Tags come in pairs: <tag> opens, </tag> closes
+- Example: <h1>Title</h1> means "Title" is a main heading
+- Attributes provide extra info: <div id="wifiStatus"> gives the div an ID
+- We use "id" to find elements with JavaScript later
+
+================================================================================
+-->
+
+
+<!-- This tells the browser this is an HTML5 document -->
 <!DOCTYPE html>
+
+<!-- Start of HTML document, "en" means English language -->
 <html lang="en">
+
+
+<!-- ============================ HEAD SECTION ============================ -->
+<!-- The "head" contains info about the page that doesn't show directly -->
 
 <head>
 
+  <!-- CHARACTER SET: This tells browser to use UTF-8 (supports all languages) -->
   <meta charset="UTF-8">
+
+  <!-- VIEWPORT: Makes the page work well on mobile phones and tablets -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- TITLE: This shows in the browser tab -->
   <title>Smart Home Dashboard</title>
 
-  <!-- Firebase -->
+
+  <!-- ============================ LOAD FIREBASE ========================= -->
+  <!--
+  Before we can use Firebase, we need to load its library code.
+  These are like "toolkits" from Google that give us special powers:
+
+  1. firebase-app.js - The core Firebase tools
+  2. firebase-auth.js - Handles login/authentication
+  3. firebase-database.js - Lets us read/write to the real-time database
+
+  We're loading these from Google's servers (www.gstatic.com).
+  This is safe - these are official Google libraries!
+  -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-  <!-- External CSS -->
+
+  <!-- ============================ LOAD CSS STYLES ====================== -->
+  <!--
+  This connects our HTML to our CSS file.
+  The "link" tag tells the browser: "Hey, there's a stylesheet called style.css
+  that will tell you how to make this page look nice!"
+  The "rel='stylesheet'" means it's a stylesheet (not something else).
+  -->
   <link rel="stylesheet" href="style.css">
 
 </head>
+<!-- End of head section -->
+
+
+<!-- ============================ BODY SECTION ============================ -->
+<!-- Everything inside <body> is what you actually see on the webpage -->
 
 <body>
 
+  <!-- CONTAINER: A wrapper that holds everything, centers it on screen -->
   <div class="container">
 
-    <!-- HEADER -->
+
+    <!-- ============================ HEADER SECTION ===================== -->
+    <!-- This is the top part of our page with the title and wifi status -->
 
     <div class="header">
 
+      <!-- MAIN TITLE: Shows our project name -->
+      <!-- The emoji 🏠 is just for fun - it makes it look nicer! -->
       <h1>🏠 Smart Home Automation</h1>
 
+      <!-- WIFI STATUS: Shows if ESP32 is connected or not -->
+      <!-- The ID "wifiStatus" is IMPORTANT - JavaScript uses this to change it -->
+      <!-- Starts with 🔴 Offline (red dot), will change to 🟢 Online when connected -->
       <div id="wifiStatus">
         🔴 Offline
       </div>
 
     </div>
+    <!-- End of header -->
 
-    <!-- SENSOR SECTION -->
+
+    <!-- ============================ SENSOR SECTION ===================== -->
+    <!-- This card shows all our sensor readings in real-time -->
 
     <div class="card">
 
+      <!-- Section title -->
       <h2>📡 Live Sensor Data</h2>
 
+      <!-- SENSOR GRID: A flexible layout that shows sensors in a grid -->
       <div class="sensorGrid">
 
+
+        <!-- ========== Temperature Sensor ========== -->
+        <!-- Each "sensorBox" holds one sensor's display -->
         <div class="sensorBox">
+
+          <!-- Sensor name/emoji -->
           <h3>🌡 Temperature</h3>
+
+          <!-- Actual reading - ID is "temp" so JavaScript can update it -->
+          <!-- Default is "0 °C" until data arrives -->
           <p id="temp">0 °C</p>
+
         </div>
 
+
+        <!-- ========== Humidity Sensor ========== -->
         <div class="sensorBox">
+
           <h3>💧 Humidity</h3>
+
+          <!-- ID is "hum" - JavaScript will put humidity % here -->
           <p id="hum">0 %</p>
+
         </div>
 
+
+        <!-- ========== Light/LDR Sensor ========== -->
         <div class="sensorBox">
+
           <h3>☀ Light</h3>
+
+          <!-- ID is "light" - shows LDR brightness value (0 = dark, 1023 = bright) -->
           <p id="light">0</p>
+
         </div>
 
+
+        <!-- ========== Gas/MQ-2 Sensor ========== -->
         <div class="sensorBox">
+
           <h3>🔥 Gas</h3>
+
+          <!-- ID is "gas" - shows gas sensor reading -->
+          <!-- Values above 300 trigger a warning alert! -->
           <p id="gas">0</p>
+
         </div>
 
+
+        <!-- ========== Motion/PIR Sensor ========== -->
         <div class="sensorBox">
+
           <h3>🚶 Motion</h3>
+
+          <!-- ID is "motion" - shows "YES" or "NO" depending on motion -->
           <p id="motion">NO</p>
+
         </div>
+
 
       </div>
+      <!-- End of sensor grid -->
 
     </div>
+    <!-- End of sensor card -->
 
-    <!-- RELAY SECTION -->
+
+    <!-- ============================ RELAY CONTROL SECTION =============== -->
+    <!-- This card shows the 4 relays and their current ON/OFF state -->
 
     <div class="card">
 
+      <!-- Section title -->
       <h2>⚡ Relay Controls</h2>
 
+      <!-- RELAY GRID: Layout for the 4 relay boxes -->
       <div class="relayGrid">
 
-        <!-- Relay 1 -->
 
+        <!-- ========== RELAY 1 (Automatic - LDR) ========== -->
+        <!-- This relay is controlled by the LDR light sensor automatically -->
         <div class="relayBox auto">
 
+          <!-- Relay name -->
           <h3>💡 Relay 1</h3>
 
+          <!-- Description of what it does -->
           <p>Automatic LDR Control</p>
 
-          <span
-            class="relayStatus"
-            id="relay1Status">
-            OFF
-          </span>
+          <!-- Status display - ID is "relay1Status" for JavaScript updates -->
+          <!-- The "span" tag is inline, good for small text pieces -->
+          <span class="relayStatus" id="relay1Status">OFF</span>
 
         </div>
 
-        <!-- Relay 2 -->
 
+        <!-- ========== RELAY 2 (Automatic - PIR) ========== -->
+        <!-- This relay is controlled by the PIR motion sensor automatically -->
         <div class="relayBox auto">
 
           <h3>🚶 Relay 2</h3>
 
           <p>PIR Motion Automation</p>
 
-          <span
-            class="relayStatus"
-            id="relay2Status">
-            OFF
-          </span>
+          <!-- ID is "relay2Status" for JavaScript to update -->
+          <span class="relayStatus" id="relay2Status">OFF</span>
 
         </div>
 
-        <!-- Relay 3 -->
 
+        <!-- ========== RELAY 3 (Manual Toggle) ========== -->
+        <!-- This relay can be manually controlled via the internet/button -->
         <div class="relayBox">
 
           <h3>🔌 Relay 3</h3>
 
           <p>Manual Internet Control</p>
 
-          <button onclick="toggleRelay(3)">
-            Toggle Relay 3
-          </button>
+          <!-- BUTTON: When clicked, it runs the toggleRelay(3) function -->
+          <!-- The "onclick" attribute tells JavaScript what to do when clicked -->
+          <button onclick="toggleRelay(3)">Toggle Relay 3</button>
 
-          <span
-            class="relayStatus"
-            id="relay3Status">
-            OFF
-          </span>
+          <!-- Status display for Relay 3 -->
+          <span class="relayStatus" id="relay3Status">OFF</span>
 
         </div>
 
-        <!-- Relay 4 -->
 
+        <!-- ========== RELAY 4 (Manual Toggle) ========== -->
+        <!-- This relay can also be manually controlled via the internet/button -->
         <div class="relayBox">
 
           <h3>🔌 Relay 4</h3>
 
           <p>Manual Internet Control</p>
 
-          <button onclick="toggleRelay(4)">
-            Toggle Relay 4
-          </button>
+          <!-- Clicking this runs toggleRelay(4) -->
+          <button onclick="toggleRelay(4)">Toggle Relay 4</button>
 
-          <span
-            class="relayStatus"
-            id="relay4Status">
-            OFF
-          </span>
+          <!-- Status display for Relay 4 -->
+          <span class="relayStatus" id="relay4Status">OFF</span>
 
         </div>
 
+
       </div>
+      <!-- End of relay grid -->
 
     </div>
+    <!-- End of relay card -->
 
-    <!-- ALERT SECTION -->
+
+    <!-- ============================ ALERT SECTION ====================== -->
+    <!-- Shows system status and any warnings (like gas leaks) -->
 
     <div class="card">
 
+      <!-- Section title -->
       <h2>🚨 System Alerts</h2>
 
-      <div id="alertBox">
-        ✅ System Normal
-      </div>
+      <!-- ALERT BOX: ID is "alertBox" so JavaScript can change it -->
+      <!-- Starts as "✅ System Normal" (green checkmark) -->
+      <div id="alertBox">✅ System Normal</div>
 
     </div>
+    <!-- End of alert card -->
 
-    <!-- FOOTER -->
+
+    <!-- ============================ FOOTER =============================== -->
+    <!-- Simple footer at the bottom of the page -->
 
     <div class="footer">
       Smart Home Automation using ESP32 + Firebase
     </div>
 
-  </div>
 
-  <!-- External JS -->
+  </div>
+  <!-- End of container -->
+
+
+  <!-- ============================ LOAD JAVASCRIPT ===================== -->
+  <!--
+  This loads our JavaScript file at the END of the body.
+  Why at the end? So that all the HTML is loaded first before our
+  JavaScript tries to use it. This prevents errors!
+
+  The script.js file contains:
+  - Firebase setup and login
+  - Code to read sensor data from Firebase
+  - Functions to update the display
+  - Code to toggle relays when buttons are clicked
+  -->
   <script src="script.js"></script>
 
+
 </body>
+<!-- End of body -->
+
 
 </html>
+<!-- End of HTML document -->
