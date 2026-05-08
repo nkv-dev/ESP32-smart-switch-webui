@@ -114,6 +114,20 @@ firebase.auth().onAuthStateChanged((user) => {
 
 /*
 --------------------------------------------------------------------------------
+                          GLOBAL DATABASE VARIABLES
+--------------------------------------------------------------------------------
+We declare these in the GLOBAL scope (outside any function) so that ALL
+functions can access them - including toggleRelay(), updateRelayUI(), etc.
+
+If we put them inside initDashboard(), other functions couldn't use them!
+*/
+
+let db;           // Will hold our Firebase database connection
+let deviceRef;    // Will point to our device's data location
+
+
+/*
+--------------------------------------------------------------------------------
                           SECTION 4: INITIALIZE DASHBOARD
 --------------------------------------------------------------------------------
 This function is called ONLY after we confirm the user is logged in.
@@ -147,8 +161,9 @@ function initDashboard() {
   - All our sensor data and relay states are stored under this location
   */
 
-  const db = firebase.database();
-  const deviceRef = db.ref("devices/switchboard1");
+  // Initialize the database connection (now accessible globally!)
+  db = firebase.database();
+  deviceRef = db.ref("devices/switchboard1");
 
 
   /*
