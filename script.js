@@ -279,7 +279,7 @@ deviceRef.on("value", (snapshot) => {
     - 300+: Significant gas leak (ALERT!)
     */
 
-    if(data.gas > 300){
+    if(data.gas > 750){
       // GAS LEAK DETECTED! Show warning
 
       // Change the text to alert users
