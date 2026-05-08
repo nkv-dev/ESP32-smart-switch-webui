@@ -76,96 +76,100 @@ firebase.initializeApp(firebaseConfig);
 
 /*
 --------------------------------------------------------------------------------
-                          SECTION 3: LOGIN TO FIREBASE
+                          SECTION 3: CHECK IF USER IS LOGGED IN
 --------------------------------------------------------------------------------
 
-Why do we need to login?
-- Firebase has a feature called "Authentication" that prevents unauthorized
-  people from reading or changing our data
-- It's like needing a password to get into a secure building
+IMPORTANT: This page now requires login!
 
-What are we doing here?
-- We're using email/password authentication
-- We're logging in with: email = "msrcasc.project@gmail.com"
-                         password = "050809"
+We don't login here anymore - instead, we check if the user is already logged in.
+The login happens on login.html. After successful login, the user is redirected
+to this dashboard page.
 
-How does .then() and .catch() work?
-- These are "promises" - they handle what happens AFTER the login attempt
-- .then() runs if the login SUCCEEDS - we'll see "Firebase Login Success"
-  in the browser console (F12 -> Console)
-- .catch() runs if the login FAILS - we'll see an error message and an alert
+How the flow works:
+1. User visits login.html
+2. User enters email/password
+3. Firebase verifies credentials
+4. On success, user is redirected to index.html (this page)
+5. This code checks: "Is user logged in?"
+   - YES: Show the dashboard
+   - NO: Send them back to login.html
 
-Note: In a real app, you'd want to hide the login form and let users create
-their own accounts. For this simple dashboard, we auto-login with our account.
+We use firebase.auth().onAuthStateChanged() to constantly watch the login state.
+This is like having a security guard who checks if you have your ID badge.
 */
 
-firebase.auth().signInWithEmailAndPassword(
-  "msrcasc.project@gmail.com",  // Our email
-  "050809"                     // Our password
-)
-
-// If login works, this runs
-.then(() => {
-  console.log("Firebase Login Success");  // Shows in browser console
-})
-
-// If login fails, this runs
-.catch((error) => {
-  console.log(error.message);  // Show error in console
-  alert(error.message);        // Show error as popup alert
+firebase.auth().onAuthStateChanged((user) => {
+  if (!user) {
+    // No user is logged in!
+    // Redirect to login page
+    window.location.href = 'login.html';
+  } else {
+    // User IS logged in!
+    // Continue loading the dashboard
+    console.log("User logged in:", user.email);
+    initDashboard();
+  }
 });
 
 
 /*
 --------------------------------------------------------------------------------
-                          SECTION 4: SETUP DATABASE CONNECTION
+                          SECTION 4: INITIALIZE DASHBOARD
 --------------------------------------------------------------------------------
-
-What is "db" and "deviceRef"?
-
-db (database):
-- This is our connection to Firebase's Realtime Database
-- Think of it as opening a channel to the online database
-- We use this to read data FROM the database and write TO the database
-
-deviceRef (device reference):
-- This points to a SPECIFIC location in our database
-- In Firebase, data is stored in a tree structure (like folders in folders)
-- Our path is: devices/switchboard1/
-- This means: in the "devices" folder, there's a device called "switchboard1"
-- All our sensor data and relay states are stored under this location
-
-Why "devices/switchboard1"?
-- "devices" is like a main folder that holds all our smart home devices
-- "switchboard1" is the name of our specific ESP32 board
-- If we had multiple ESP32 boards, we'd have "switchboard2", "switchboard3", etc.
+This function is called ONLY after we confirm the user is logged in.
+It sets up the database connection and starts listening for sensor data.
 */
+function initDashboard() {
 
-const db = firebase.database();
+  console.log("Dashboard initialized - user authenticated!");
 
-// This points to: https://.../devices/switchboard1
-const deviceRef = db.ref("devices/switchboard1");
+  // Show that we're connected (in console)
+  console.log("Firebase and Database connected successfully!");
 
 
-/*
---------------------------------------------------------------------------------
-                          SECTION 5: READ DATA IN REAL-TIME (LIVE UPDATES)
---------------------------------------------------------------------------------
+  /*
+  ------------------------------------------------------------------------
+  SECTION 4: SETUP DATABASE CONNECTION
+  ------------------------------------------------------------------------
 
-What does "on('value', ...)" do?
-- This is the most important part of the code!
-- It sets up a "listener" that watches for changes in the database
-- Whenever the ESP32 sends new data, this code automatically runs
+  What is "db" and "deviceRef"?
 
-How it works step by step:
-1. "on('value', ...)" means "whenever the VALUE changes, run this function"
-2. The function receives a "snapshot" - this is like a photo of the data
-3. snapshot.val() extracts the actual data from that photo
-4. We then update the webpage with this new data
+  db (database):
+  - This is our connection to Firebase's Realtime Database
+  - Think of it as opening a channel to the online database
+  - We use this to read data FROM the database and write TO the database
 
-What data are we reading?
-- temperature: Temperature from DHT sensor (in Celsius)
-- humidity: Humidity from DHT sensor (in percentage)
+  deviceRef (device reference):
+  - This points to a SPECIFIC location in our database
+  - In Firebase, data is stored in a tree structure (like folders in folders)
+  - Our path is: devices/switchboard1/
+  - This means: in the "devices" folder, there's a device called "switchboard1"
+  - All our sensor data and relay states are stored under this location
+  */
+
+  const db = firebase.database();
+  const deviceRef = db.ref("devices/switchboard1");
+
+
+  /*
+  ------------------------------------------------------------------------
+  SECTION 5: READ DATA IN REAL-TIME (LIVE UPDATES)
+  ------------------------------------------------------------------------
+
+  What does "on('value', ...)" do?
+  - This is the most important part of the code!
+  - It sets up a "listener" that watches for changes in the database
+  - Whenever the ESP32 sends new data, this code automatically runs
+
+  How it works step by step:
+  1. "on('value', ...)" means "whenever the VALUE changes, run this function"
+  2. The function receives a "snapshot" - this is like a photo of the data
+  3. snapshot.val() extracts the actual data from that photo
+  4. We then update the webpage with this new data
+
+  What data are we reading?
+  - temperature: Temperature from DHT sensor (in Celsius)
+  - humidity: Humidity from DHT sensor (in percentage)
 - light: Light level from LDR (Light Dependent Resistor) - higher = brighter
 - gas: Gas level from MQ-2 sensor - higher = more gas detected
 - motion: true/false from PIR sensor - true = motion detected
@@ -283,6 +287,8 @@ deviceRef.on("value", (snapshot) => {
 
 }); // End of the "on('value')" listener
 
+} // End of initDashboard() function
+
 
 /*
 --------------------------------------------------------------------------------
@@ -391,6 +397,33 @@ function toggleRelay(relayNo){
 
 
 /*
+--------------------------------------------------------------------------------
+                          SECTION: LOGOUT FUNCTION
+--------------------------------------------------------------------------------
+
+What does this do?
+- This function is called when the user clicks the "Logout" button
+- It signs the user out of Firebase
+- Then redirects them back to the login page
+
+How it works:
+1. firebase.auth().signOut() - This logs the user out
+2. .then() - After logout completes, we redirect to login.html
+*/
+function logout() {
+  firebase.auth().signOut()
+    .then(() => {
+      console.log("User logged out");
+      // Redirect to login page
+      window.location.href = 'login.html';
+    })
+    .catch((error) => {
+      console.log("Logout error:", error.message);
+    });
+}
+
+
+/*
 ================================================================================
                               END OF JAVASCRIPT FILE
 ================================================================================
@@ -402,6 +435,7 @@ WHAT HAVE WE LEARNED?
 3. We use "db.ref().set()" to write data (toggle relays)
 4. Functions help us avoid repeating code
 5. Real-time updates happen automatically - no need to refresh the page!
+6. Authentication protects the dashboard from unauthorized access
 
 NEXT STEPS (if you want to learn more):
 - Add Firebase Security Rules to protect your database
