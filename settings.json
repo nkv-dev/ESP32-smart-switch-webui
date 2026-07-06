@@ -1,0 +1,27 @@
+{
+  "allowedUsers": [
+    "nkv-dev"
+  ],
+  "companyProfile": {
+    "name": "Acme Corporation",
+    "email": "nkv-dev@example.com",
+    "address": "123 Business Rd, Suite 100\nAcme City, NY 10001",
+    "phone": "+1 (555) 123-4567",
+    "taxId": "EIN-12-3456789",
+    "bankName": "Chase Bank",
+    "bankAccount": "1234567890",
+    "bankRouting": "987654321"
+  },
+  "clients": [
+    {
+      "id": "client-1",
+      "name": "Global Tech Industries",
+      "email": "finance@globaltech.com",
+      "address": "456 Innovation Way, Tech Valley, CA 94043",
+      "taxId": "ABN-11-222-333-444"
+    }
+  ],
+  "defaultCurrency": "USD",
+  "defaultTaxRate": 10,
+  "defaultTerms": "Payment is due within 14 days of invoice date. Thank you for your business!"
+}
